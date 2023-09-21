@@ -20,7 +20,18 @@ namespace CA230921
             _ = sr.ReadLine();
             while (!sr.EndOfStream) versenyzok.Add(new Versenyzo(sr.ReadLine()));
 
-            Console.WriteLine($"versenyzok szama: {versenyzok.Count}");
+            Console.WriteLine($"versenyzok szama: {versenyzok.Count} fo");
+
+            var nokcelba = versenyzok.Count(v => !v.Kategoria && v.TavSzazalek == 100);
+            Console.WriteLine($"celba erkezo nok: {nokcelba} fo");
+
+            Console.Write("kerem a sportolo nevet: ");
+            string kerNev = Console.ReadLine().ToLower();
+            var kerVer = versenyzok.SingleOrDefault(v => v.Nev.ToLower() == kerNev);
+            Console.WriteLine($"\tindult egyeniben: {(kerVer is not null ? "IGEN" : "NEM")}");
+            if (kerVer is not null)
+                Console.WriteLine($"\tteljesitette a tavot? {(kerVer.TavSzazalek == 100 ? "IGEN" : "NEM")}");
+
 
             //kódindentáció példány szintű hívási láncoknál:
             //selektor (a pont) a sor elején legyen!
@@ -36,9 +47,8 @@ namespace CA230921
         static string Gyoztes(bool kategoria)
         {
             var gyoztes = versenyzok
-                .Where(v => v.Kategoria == kategoria && v.TavSzazalek == 100)
                 .OrderBy(v => v.Versenyido)
-                .First();
+                .First(v => v.Kategoria == kategoria && v.TavSzazalek == 100);
 
             return $"{(kategoria ? "Ferfiak:" : "Nok:")} " +
                 $"{gyoztes.Nev} " +
